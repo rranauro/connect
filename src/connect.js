@@ -193,7 +193,7 @@ ConnectWrapper.prototype.all_ids = function( collection, query, next ) {
 		query = {};
 	}
 	
-	this.db().collection(collection)
+	this.collection(collection)
 	.find( query )
 	.project({_id:1})
 	.toArray(function(err, results) {
