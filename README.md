@@ -1,5 +1,5 @@
-# connect_wrapper
-Connection management, workflow abstractions and collection name spacing.
+# connect
+MongoDb connection management, workflow abstractions and collection name spacing. 
 
 ## Why?
 The [MongoDB](http://mongodb.github.io/node-mongodb-native/) driver provides a simple interface to MongoDB from Node, but we need an easy way to re-use connections to avoid out-of-memory conditions on the client. Also, we enhance the driver with `bulkSave` and `updateAll` methods to take advantage of MongoDB's inherent use of parallelism. Finally updating production servers with large reference databases can shut down a running application for for an extended period of time. The library provides a means of *name-spacing* a collection to allow re-writing a collection without over-writing the prior version. With new reference data, the application can be easily restarted to work with the new data.
