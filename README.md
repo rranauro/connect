@@ -1,2 +1,2 @@
-# connect
-Connection management, name spacing, and queued access to Mongo DB
+# connect_wrapper
+Simple MongoDB Connnection Wrapper
