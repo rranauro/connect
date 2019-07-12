@@ -2,7 +2,11 @@
 MongoDb connection management, workflow abstractions and collection name spacing. 
 
 ## Why?
-The [MongoDB](http://mongodb.github.io/node-mongodb-native/) driver provides a simple interface to MongoDB from Node, but we need an easy way to re-use connections to avoid out-of-memory conditions on the client. Also, we enhance the driver with `bulkSave` and `updateAll` methods to take advantage of MongoDB's inherent use of parallelism. Finally updating production servers with large reference databases can shut down a running application for for an extended period of time. The library provides a means of *name-spacing* a collection to allow re-writing a collection without over-writing the prior version. With new reference data, the application can be easily restarted to work with the new data.
+The [MongoDB](http://mongodb.github.io/node-mongodb-native/) driver provides a simple interface to MongoDB from Node, but there are 3 things we needed to solve for high volume data applications:
+
+1. Connection management. We need an easy way to re-use connections to avoid out-of-memory conditions on the client. 
+2. Bulk workflow support. We enhance the driver with `bulkSave` and `updateAll` methods to take advantage of MongoDB's parallel connection support
+3. Name-spacing. Finally updating production servers with large reference databases can shut down a running application for for an extended period of time. Connect provides a means of *name-spacing* a collection within a single database. This to allow re-writing a collection without over-writing the prior version. Thus, the application can be easily restarted to work with the new data avoiding downtime while the new reference data is copied in.
 
 ## Installations
 ```
