@@ -100,12 +100,12 @@ ConnectWrapper.prototype.create = function( collection, docs, next ) {
 		self.db().collection( collection )
 		.insertMany(docs.slice(start, start+self._options.create), {ordered: false}, function(err, response) {
 			if (err) {
-				console.log('[connect_wrapper/create] warning: error', (err && err.message) || err);
+				console.log('[create] warning: error', (err && err.message) || err);
 			}
 			go(null, response && response.result);
 		});
 	}, function(err, all) {
-		console.log('[ConnectWrapper] info: saved', collection, docs.length);
+		console.log('[create] info: saved', collection, docs.length);
 		next(err, _.flatten(all));
 	});
 };
