@@ -10,7 +10,7 @@ The [MongoDB](http://mongodb.github.io/node-mongodb-native/) driver provides a s
 
 ## Installations
 ```
-npm install https://github.com/rranauro/connect.git
+npm install https://github.com/rranauro/connect.git connect --save
 ```
 Then in your code:
 ```
