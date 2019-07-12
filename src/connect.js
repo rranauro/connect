@@ -241,7 +241,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 			return callback({message: 'Cannot duplicate to identical collection name.'});
 		}
 	}
-	options = _.defaults(self._options || {}, {target: self, create: 10000});
+	options = _.defaults(options || {}, {create: 10000, target: self});
 	let queue = options.target.createQueue( collection2 );
 	
 	self.all_ids( collection1, {}, function(err, ids) {
