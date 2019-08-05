@@ -232,6 +232,7 @@ ConnectWrapper.prototype.updateAll = function(collection, docs, callback) {
 };
 
 ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, callback) {
+	let cursor = this.collection( collection1 );
 	let self = this;
 	
 	if (_.isFunction(options)) {
@@ -243,8 +244,15 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 	}
 	options = _.defaults(options || {}, {create: 10000, target: self});
 	let queue = options.target.createQueue( collection2 );
+	cursor.find({}).forEach(function(doc) {
+		
+		queue.push( doc );
+		if (!cursor.hasNext()) {
+			queue.drain(callback).flush();
+		}
+	});
 	
-	self.all_ids( collection1, {}, function(err, ids) {
+/*	self.all_ids( collection1, {}, function(err, ids) {
 		if (err) {
 			console.log('[bulkSave] error: ', err.message);
 			return callback(err);
@@ -266,7 +274,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 			}
 			queue.drain(callback).flush();
 		});
-	});
+	});*/
 };
 
 module.exports = function(auth, URI, prefix) {
