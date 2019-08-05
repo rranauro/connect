@@ -232,7 +232,7 @@ ConnectWrapper.prototype.updateAll = function(collection, docs, callback) {
 };
 
 ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, callback) {
-	let cursor = this.collection( collection1 );
+	let cursor = this.collection( collection1 ).find({});
 	let self = this;
 	
 	if (_.isFunction(options)) {
@@ -244,7 +244,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 	}
 	options = _.defaults(options || {}, {create: 10000, target: self});
 	let queue = options.target.createQueue( collection2 );
-	cursor.find({}).forEach(function(doc) {
+	cursor.forEach(function(doc) {
 		
 		queue.push( doc );
 		if (!cursor.hasNext()) {
