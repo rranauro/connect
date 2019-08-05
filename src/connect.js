@@ -90,6 +90,8 @@ ConnectWrapper.prototype.create = function( collection, docs, next ) {
 	docs = docs.map(function(doc) {
 		if ( !doc.hasOwnProperty('_id') ) {
 			doc._id = uuidV1();
+		} else if (typeof doc._id !== 'string') {
+			doc._id = doc._id.toString();
 		}
 		return doc;
 	});
