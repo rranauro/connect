@@ -276,7 +276,8 @@ ConnectWrapper.prototype.findManyIn = function(collection, options, callback) {
 	
 	async.mapLimit(_.range(0, options.select.length, 1000), 4, function(start, next) {
 		self.collection( collection )
-		.find({[options.key]: {$in: options.select.slice(start, start+1000)}}, next);
+		.find({[options.key]: {$in: options.select.slice(start, start+1000)}})
+		.toArray(next);
 	}, function(err, docs) {
 		callback(err, !err && _.flatten(docs));
 	});
