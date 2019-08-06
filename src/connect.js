@@ -271,6 +271,17 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 	});
 };
 
+ConnectWrapper.prototype.findManyIn = function(collection, options, callback) {
+	let self = this;
+	
+	async.mapLimit(_.range(0, options.select.length, 1000), 4, function(start, go) {
+		self.collection( collection )
+		.find({[options.key]: {$in: options.select.slice(start, start+1000)}}, go);
+	}, function(err) {
+		callback(err, !err && _.flatten(docs));
+	});
+};
+
 module.exports = function(auth, URI, prefix) {
 	return new ConnectWrapper(auth, URI, prefix);
 };
