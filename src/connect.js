@@ -29,7 +29,7 @@ var ConnectWrapper = function(auth, uri_template, collection_prefix) {
 		this._connection_id = uuidV1();
 		this._dbName = _.last( this.url.split('/') )
 	}
-	this._options = {create: 1000, concurrency: 4, limit: undefined};	
+	this._options = {create: 1000, concurrency: 4, limit: 0};	
 	return this;
 };
 
@@ -125,7 +125,8 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 	ConnectWrapper.prototype.options.call(self, _.defaults( self._options, {
 		upsert:false, 
 		create: 10000,
-		concurrency: 4
+		concurrency: 4,
+		limit: 0
 	}));
 	
 	collection = this._collection_prefix + collection;
