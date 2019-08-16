@@ -29,7 +29,7 @@ var ConnectWrapper = function(auth, uri_template, collection_prefix) {
 		this._connection_id = uuidV1();
 		this._dbName = _.last( this.url.split('/') )
 	}
-	this._options = {create: 1000, concurrency: 4};	
+	this._options = {create: 1000, concurrency: 4, limit: undefined};	
 	return this;
 };
 
@@ -203,7 +203,8 @@ ConnectWrapper.prototype.all_ids = function( collection, query, next ) {
 	});
 };
 
-ConnectWrapper.prototype.filter = function( collection, query, fields, Fn, Final ) {
+ConnectWrapper.prototype.map = function( collection, query, fields, Fn, Final ) {
+	let self = this;
 	let cursor = this.collection( collection );
 	
 	if (typeof fields === 'function') {
@@ -215,9 +216,10 @@ ConnectWrapper.prototype.filter = function( collection, query, fields, Fn, Final
 	async.auto({
 		count: function(next) { cursor.countDocuments(next); },
 		find: ['count', function(next, data) {
-			cursor.find( query ).project( fields ).toArray(function(err, docs) {
+			cursor.find( query ).project( fields ).limit( self._options.limit )
+			.toArray(function(err, docs) {
 				if (err) return next(err);
-				next(null, docs.filter(function(doc) {
+				next(null, docs.map(function(doc) {
 					return Fn( doc );
 				}));				
 			});
@@ -226,6 +228,20 @@ ConnectWrapper.prototype.filter = function( collection, query, fields, Fn, Final
 			Final( null, data.find );
 		}],
 	}, Final);
+};
+
+ConnectWrapper.prototype.filter = function( collection, query, fields, Fn, Final ) {
+	let cursor = this.collection( collection );
+	
+	if (typeof fields === 'function') {
+		Final = Fn;
+		Fn = fields;
+		fields = {};
+	}
+	
+	this.map( collection, query, fields, _.identity, function(err, docs) {
+		Final(err, docs.filter(Fn));
+	});
 };
 
 ConnectWrapper.prototype.updateAll = function(collection, docs, callback) {
