@@ -43,7 +43,10 @@ ConnectWrapper.prototype.auth = function(next) {
 	if (!pool[self.url]) {
 
 		// initiate new connection
-		MongoClient.connect( this.url, { useNewUrlParser: true }, function(err, client) {
+		MongoClient.connect( this.url, { 
+			useUnifiedTopology: true,
+			useNewUrlParser: true 
+		}, function(err, client) {
 			if (err) {
 				return next(err);
 			}
