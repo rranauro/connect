@@ -275,7 +275,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 		// copy docs 1000 at a time
 		console.log('[bulkSave] info:', collection2, ids.length);
 		async.eachLimit(_.range(0, ids.length, self._options.create), 1, function(start, next) {
-			self.db().collection( collection1 )
+			self.collection( collection1 )
 			.find({_id:{$in: ids.slice(start, start+self._options.create)}})
 			.toArray(function(err, docs) {	
 				queue.push( docs );
