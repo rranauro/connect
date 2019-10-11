@@ -29,7 +29,7 @@ var ConnectWrapper = function(auth, uri_template, collection_prefix) {
 		this._connection_id = uuidV1();
 		this._dbName = _.last( this.url.split('/') )
 	}
-	this._options = {create: 1000, concurrency: 4, limit: 0};	
+	this._options = {create: 10000, concurrency: 4, limit: 0};	
 	return this;
 };
 
@@ -272,7 +272,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 			return callback(err);
 		}
 		
-		// copy docs 1000 at a time
+		// copy docs 10000 at a time
 		console.log('[bulkSave] info:', collection2, ids.length);
 		async.eachLimit(_.range(0, ids.length, self._options.create), 1, function(start, next) {
 			self.collection( collection1 )
