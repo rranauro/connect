@@ -199,10 +199,13 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 			return this;
 		},
 		flush: function(fN) {
+			let self = this;
+			
 			if (_.isFunction(fN)) {
-				return queue.push( [docs_to_save.slice(0)], function() {
-					fN.apply(this, arguments);
+				return self.drain(function() {
+					fN.apply(self, arguments);
 				});
+				queue.push( [docs_to_save.slice(0)] );
 			}
 			return queue.push( [docs_to_save.slice(0)] );
 		}
