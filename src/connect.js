@@ -202,12 +202,12 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 			let self = this;
 			
 			if (_.isFunction(fN)) {
-				return self.drain(function() {
+				self.drain(function() {
 					fN.apply(self, arguments);
 				});
-				queue.push( [docs_to_save.slice(0)] );
 			}
-			return queue.push( [docs_to_save.slice(0)] );
+			queue.push( [docs_to_save.slice(0)] );
+			return this;
 		}
 	};
 };
