@@ -154,7 +154,7 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 	} else {
 		queue = async.queue(function(docs, next) {
 			count += docs.length;
-			return self.create( originalCollection, docs, function(err, result) {
+			return self.create( originalCollection, docs, function(err, response) {
 				results.push(err && err.result || response && response.result || {});
 				next();
 			});
