@@ -146,8 +146,8 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 			count += 1;
 
 			return self.collection( originalCollection )
-			.findOneAndUpdate({_id: doc._id}, {$set: doc['$set']}, _.pick(self._options, 'upsert'), function() {
-				results.push();
+			.findOneAndUpdate({_id: doc._id}, {$set: doc['$set']}, _.pick(self._options, 'upsert'), function(err, result) {
+				results.push(err && err.result || response && response.result || {});
 				next();				
 			});		
 		}, self._options.concurrency);		
@@ -155,7 +155,7 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 		queue = async.queue(function(docs, next) {
 			count += docs.length;
 			return self.create( originalCollection, docs, function(err, result) {
-				results.push();
+				results.push(err && err.result || response && response.result || {});
 				next();
 			});
 		}, 1);		
