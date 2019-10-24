@@ -106,9 +106,9 @@ ConnectWrapper.prototype.create = function( collection, docs, next ) {
 		.insertMany(docs.slice(start, start+self._options.create), {ordered: false}, function(err, response) {
 			if (err) {
 				console.log('[create] warning: error', (err && err.message) || err);
-				return go(null, err && err.result);
+				return go(null, err);
 			}
-			go(null, response && response.result);
+			go(null, response);
 		});
 	}, function(err, all) {
 		console.log('[create] info: saved', collection, docs.length);
