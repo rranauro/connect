@@ -156,6 +156,9 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 	}
 	
 	return {
+		length: function() {
+			return docs_to_save.length;
+		},
 		options: _.bind(ConnectWrapper.prototype.options, self),
 		drain: function(fN) {
 			queue.drain = function() {
@@ -188,8 +191,13 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 			}			
 			return this;
 		},
-		flush: function() {
-			queue.push( [docs_to_save.slice(0)] );
+		flush: function(fN) {
+			if (_.isFunction(fN)) {
+				return queue.push( [docs_to_save.slice(0)], function() {
+					fN.apply(this, arguments);
+				});
+			}
+			return queue.push( [docs_to_save.slice(0)] );
 		}
 	};
 };
