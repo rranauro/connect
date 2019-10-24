@@ -137,6 +137,7 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 	let docs_to_save = [];
 	let count = 0;
 	let queue;
+	let results = [];
 
 	if (update_only) {
 		queue = async.queue(function(doc, next) {
@@ -145,17 +146,23 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 			count += 1;
 
 			return self.collection( originalCollection )
-			.findOneAndUpdate({_id: doc._id}, {$set: doc['$set']}, _.pick(self._options, 'upsert'), next);		
+			.findOneAndUpdate({_id: doc._id}, {$set: doc['$set']}, _.pick(self._options, 'upsert'), function() {
+				results.push();
+				next();				
+			});		
 		}, self._options.concurrency);		
 	} else {
 		queue = async.queue(function(docs, next) {
 			count += docs.length;
-			console.log('[createQueue] info: saving...', docs.length, count);
-			return self.create( originalCollection, docs, next);
+			return self.create( originalCollection, docs, function(err, result) {
+				results.push();
+				next();
+			});
 		}, 1);		
 	}
 	
 	return {
+		results: function() { return results.slice(0); },
 		length: function() {
 			return docs_to_save.length;
 		},
