@@ -279,14 +279,13 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 	
 	if (_.isFunction(options)) {
 		callback = options;
-		options = {create: 10000, target: self};
+		options = {target: self};
 		if (collection1 === collection2) {
 			return callback({message: 'Cannot duplicate to identical collection name.'});
 		}
 	}
-	options = _.extend(self._options, _.defaults(options || {}, {create: 10000, target: self}));
+	options = _.extend(self._options, _.defaults(options || {}, {target: self}));
 	options.create = parseInt(options.create, 10);
-	let queue = options.target.createQueue( collection2 );
 	
 	self.all_ids( collection1, {}, function(err, ids) {
 		if (err) {
@@ -300,15 +299,15 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 			self.collection( collection1 )
 			.find({_id:{$in: ids.slice(start, start+options.create)}})
 			.toArray(function(err, docs) {	
-				queue.push( docs );
-				next();
+				options.target.create( collection2, docs, next );
 			});
 		}, function(err) {
 			if (err) {
 				console.log('[bulkSave] error:', err && err.message || err.reason || err);
 				return callback(err);
 			}
-			queue.drain(callback).flush();
+			console.log('[bulkSave] Finished.');
+			callback();
 		});
 	});
 };
