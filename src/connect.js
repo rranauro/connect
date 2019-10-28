@@ -284,7 +284,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 			return callback({message: 'Cannot duplicate to identical collection name.'});
 		}
 	}
-	options = _.defaults(options || {}, {create: 10000, target: self});
+	options = _.extend({}, self._options, _.defaults(options || {}, {create: 10000, target: self}));
 	let queue = options.target.createQueue( collection2 );
 	
 	self.all_ids( collection1, {}, function(err, ids) {
@@ -295,9 +295,9 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 		
 		// copy docs 10000 at a time
 		console.log('[bulkSave] info:', collection2, ids.length);
-		async.eachLimit(_.range(0, ids.length, self._options.create), 1, function(start, next) {
+		async.eachLimit(_.range(0, ids.length, options.create), 1, function(start, next) {
 			self.collection( collection1 )
-			.find({_id:{$in: ids.slice(start, start+self._options.create)}})
+			.find({_id:{$in: ids.slice(start, start+options.create)}})
 			.toArray(function(err, docs) {	
 				queue.push( docs );
 				next();
