@@ -285,6 +285,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 		}
 	}
 	options = _.extend({}, self._options, _.defaults(options || {}, {create: 10000, target: self}));
+	options.create = parseInt(options.create, 10);
 	let queue = options.target.createQueue( collection2 );
 	
 	self.all_ids( collection1, {}, function(err, ids) {
