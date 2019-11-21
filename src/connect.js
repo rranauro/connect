@@ -204,6 +204,11 @@ ConnectWrapper.prototype.createQueue = function( collection, update_only ) {
 			let self = this;
 			
 			if (_.isFunction(fN)) {
+				
+				if (!docs_to_save.length) {
+					return fn.apply(self);
+				}
+				
 				self.drain(function() {
 					fN.apply(self, arguments);
 				});
