@@ -84,6 +84,15 @@ ConnectWrapper.prototype.collectionPrefix = function(prefix) {
 	return this._collection_prefix;
 };
 
+ConnectWrapper.prototype.findOne = function( collection, $select, $project, callback ) {
+	this.collection( collection )
+	.find( $select )
+	.project( $project )
+	.limit(1)
+	.next(callback);
+	return this;
+};
+
 ConnectWrapper.prototype.create = function( collection, docs, next ) {
 	var self = this;
 	collection = this._collection_prefix + collection;
