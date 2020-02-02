@@ -93,7 +93,11 @@ ConnectWrapper.prototype.findOne = function( collection, $select, $project, call
 	return this;
 };
 
-ConnectWrapper.prototype.create = function( collection, docs, next ) {
+ConnectWrapper.prototype.create = function( collection, docs, options, next ) {
+	if (_.isFunction(options)) {
+		next = options;
+		options = {count: 0, total: -1};
+	}
 	var self = this;
 	collection = this._collection_prefix + collection;
 	docs = _.isArray(docs) ? docs : [docs];
@@ -109,6 +113,8 @@ ConnectWrapper.prototype.create = function( collection, docs, next ) {
 	});
 	
 	// copy docs 10000 at a time
+	options.count += docs.length;
+	options.total = options.total || docs.length;
 	async.mapLimit(_.range(0, docs.length, this._options.create), 1, function(start, go) {
 				
 		self.db().collection( collection )
@@ -120,7 +126,7 @@ ConnectWrapper.prototype.create = function( collection, docs, next ) {
 			go(null, response);
 		});
 	}, function(err, all) {
-		console.log('[create] info: saved', collection, docs.length);
+		console.log('[create] info: saved', collection, docs.length, options.count, options.total);
 		next(err, _.flatten(all));
 	});
 };
@@ -309,11 +315,13 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 		
 		// copy docs 10000 at a time
 		console.log('[bulkSave] info:', collection2, ids.length);
+		options.total = ids.length;
+		options.count = 0;
 		async.eachLimit(_.range(0, ids.length, options.create), 1, function(start, next) {
 			self.collection( collection1 )
 			.find({_id:{$in: ids.slice(start, start+options.create)}})
 			.toArray(function(err, docs) {	
-				options.target.create( collection2, docs, next );
+				options.target.create( collection2, docs, options, next );
 			});
 		}, function(err) {
 			if (err) {
