@@ -10,7 +10,7 @@ var ConnectWrapper = function(auth, uri_template, collection_prefix) {
 	this._arguments = _.toArray( arguments ).slice(0);
 	auth = auth ? auth.split(' ') : '';   
 	// create a buffer and tell it the data coming in is base64
-    var plain_auth = new Buffer(auth[1], 'base64'); 
+    var plain_auth = new Buffer.from(auth[1], 'base64'); 
 	
 	if (uri_template) {
 
