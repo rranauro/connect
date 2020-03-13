@@ -96,7 +96,7 @@ ConnectWrapper.prototype.findOne = function( collection, $select, $project, call
 ConnectWrapper.prototype.create = function( collection, docs, options, next ) {
 	if (_.isFunction(options)) {
 		next = options;
-		options = {count: 0, total: -1};
+		options = {count: 0, log: true};
 	}
 	var self = this;
 	collection = this._collection_prefix + collection;
@@ -126,7 +126,7 @@ ConnectWrapper.prototype.create = function( collection, docs, options, next ) {
 			go(null, response);
 		});
 	}, function(err, all) {
-		console.log('[create] info: saved', collection, docs.length, options.count, options.total);
+		if (options.log) console.log('[create] info: saved', collection, docs.length, options.count, options.total);
 		next(err, _.flatten(all));
 	});
 };
