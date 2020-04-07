@@ -29,7 +29,7 @@ var ConnectWrapper = function(auth, uri_template, collection_prefix) {
 		this._connection_id = uuidV1();
 		this._dbName = _.last( this.url.split('/') )
 	}
-	this._options = {create: 10000, concurrency: 4, limit: 0};	
+	this._options = {create: 10000, concurrency: 4, limit: 0, log: true};	
 	return this;
 };
 
@@ -97,6 +97,8 @@ ConnectWrapper.prototype.create = function( collection, docs, options, next ) {
 	if (_.isFunction(options)) {
 		next = options;
 		options = {count: 0, log: true};
+	} else {
+		options = _.defaults
 	}
 	var self = this;
 	collection = this._collection_prefix + collection;
@@ -304,7 +306,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 			return callback({message: 'Cannot duplicate to identical collection name.'});
 		}
 	}
-	options = _.extend(self._options, _.defaults(options || {}, {target: self}));
+	options = _.extend(self._options, _.defaults(options || {}, {target: self, log: true}));
 	options.create = parseInt(options.create, 10);
 	
 	self.all_ids( collection1, {}, function(err, ids) {
