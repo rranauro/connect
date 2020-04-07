@@ -117,6 +117,7 @@ ConnectWrapper.prototype.create = function( collection, docs, options, next ) {
 	// copy docs 10000 at a time
 	options.count += docs.length;
 	options.total = options.total || docs.length;
+	options.log = options.hasOwnProperty('log') ? options.log : true;
 	async.mapLimit(_.range(0, docs.length, this._options.create), 1, function(start, go) {
 				
 		self.db().collection( collection )
@@ -319,6 +320,7 @@ ConnectWrapper.prototype.bulkSave = function(collection1, collection2, options, 
 		console.log('[bulkSave] info:', collection2, ids.length);
 		options.total = ids.length;
 		options.count = 0;
+		options.log = options.hasOwnProperty('log') ? options.log : true;
 		async.eachLimit(_.range(0, ids.length, options.create), 1, function(start, next) {
 			self.collection( collection1 )
 			.find({_id:{$in: ids.slice(start, start+options.create)}})
