@@ -98,7 +98,7 @@ ConnectWrapper.prototype.create = function( collection, docs, options, next ) {
 		next = options;
 		options = {count: 0, log: true};
 	} else {
-		options = _.defaults
+		options = _.defaults(options || {}, {count: 0, log: true})
 	}
 	var self = this;
 	collection = this._collection_prefix + collection;
@@ -117,7 +117,6 @@ ConnectWrapper.prototype.create = function( collection, docs, options, next ) {
 	// copy docs 10000 at a time
 	options.count += docs.length;
 	options.total = options.total || docs.length;
-	options.log = options.hasOwnProperty('log') ? options.log : true;
 	async.mapLimit(_.range(0, docs.length, this._options.create), 1, function(start, go) {
 				
 		self.db().collection( collection )
