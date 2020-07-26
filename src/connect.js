@@ -25,7 +25,7 @@ var ConnectWrapper = function(auth, uri_template, collection_prefix) {
 		this._db = pool[this.url];		
 
 		// allow multiple logical databases within 1 physical;
-		this._collection_prefix = collection_prefix ? collection_prefix + ':' : '';
+		this._collection_prefix = collection_prefix ? collection_prefix : '';
 		this._connection_id = uuidV1();
 		this._dbName = _.last( this.url.split('/') )
 	}
