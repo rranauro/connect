@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/rranauro/connect#readme",
   "devDependencies": {
-    "mocha": "^6.1.4"
+    "mocha": "^10.2.0"
   },
   "dependencies": {
     "async": "1.5.2",
